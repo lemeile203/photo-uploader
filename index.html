@@ -47,7 +47,7 @@
       if (!imageDataUrl) return alert("사진을 먼저 선택하세요.");
       const form = new FormData();
       form.append("image", imageDataUrl);
-      fetch("https://script.google.com/macros/s/你的_WEBAPP_URL/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbwjzBxJswwGFk4HPT3k51J4AeLnXw_Tgk5_RLYmLhIOvOMY5YYZIA2-Bs_a3xP1xvCj/exec", {
         method: "POST",
         body: form
       }).then(res => res.text()).then(res => {
