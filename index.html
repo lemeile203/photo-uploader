@@ -46,7 +46,7 @@
    function upload() {
   if (!imageDataUrl) return alert("사진을 먼저 선택하세요.");
 
-  fetch("https://script.google.com/macros/s/AKfycbxfe6VXZPqspFZIyjjcIUqO9DFXMK7UD2yOSU6cL1rerugClR3fq2dEoZohh8_Dzezj/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbzcwdCsq3_ITTBIO0v6bPAWMnWMiFELXApLcXE035i0qkZWkMHCfW0WwmDMHIsGzu0N/exec", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ image: imageDataUrl })
