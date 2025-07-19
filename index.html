@@ -6,14 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://unpkg.com/cropperjs"></script>
   <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css" />
-  <style><!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>사진 업로드</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://unpkg.com/cropperjs"></script>
-  <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css" />
   <style>
     body {
       margin: 0;
@@ -38,11 +30,12 @@
     }
 
     input[type="file"] {
-      display: none;
+      margin-top: 15px;
+      font-size: 1rem;
     }
 
     button {
-      margin-top: 10px;
+      margin-top: 15px;
       background-color: #007BFF;
       color: white;
       border: none;
@@ -65,28 +58,21 @@
 </head>
 <body>
   <h2>사진을 업로드해 주세요</h2>
-
-  <!-- 두 개의 input -->
-  <input type="file" accept="image/*" id="cameraInput" capture="environment" />
-  <input type="file" accept="image/*" id="albumInput" />
-
-  <!-- 두 개의 버튼 -->
-  <button onclick="document.getElementById('cameraInput').click()">📷 촬영하기</button>
-  <button onclick="document.getElementById('albumInput').click()">🖼️ 앨범에서 선택</button>
-
-  <br /><br />
+ <input type="file" accept="image/*" id="inputImage" />
+  <br />
   <canvas id="preview" width="300" height="300"></canvas>
   <br />
-  <button onclick="upload()">📤 Drive에 업로드</button>
+  <button onclick="upload()">Drive에 업로드</button>
   <p id="result"></p>
 
   <script>
+    const input = document.getElementById('inputImage');
     const canvas = document.getElementById('preview');
     const ctx = canvas.getContext('2d');
     let imageDataUrl;
 
-    // 두 input 다 처리하는 공통 함수
-    function handleImageFile(file) {
+    input.addEventListener('change', e => {
+      const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
@@ -103,15 +89,6 @@
         img.src = reader.result;
       };
       reader.readAsDataURL(file);
-    }
-
-    // 이벤트 바인딩
-    document.getElementById('cameraInput').addEventListener('change', e => {
-      handleImageFile(e.target.files[0]);
-    });
-
-    document.getElementById('albumInput').addEventListener('change', e => {
-      handleImageFile(e.target.files[0]);
     });
 
       function upload() {
