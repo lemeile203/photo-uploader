@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://unpkg.com/cropperjs"></script>
   <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -58,7 +59,7 @@
 </head>
 <body>
   <h2>사진을 업로드해 주세요</h2>
- <input type="file" accept="image/*" id="inputImage" />
+  <input type="file" accept="image/*" id="inputImage" />
   <br />
   <canvas id="preview" width="300" height="300"></canvas>
   <br />
@@ -71,9 +72,32 @@
     const ctx = canvas.getContext('2d');
     let imageDataUrl;
 
-    input.addEventListener('change', e => {
+    input.addEventListener('change', async e => {
       const file = e.target.files[0];
       if (!file) return;
+
+      let blob = file;
+
+      // HEIC 형식이면 변환
+      if (
+        file.type === 'image/heic' || file.type === 'image/heif' ||
+        /\.heic$/i.test(file.name)
+      ) {
+        try {
+          document.getElementById("result").innerText = "🔄 HEIC 변환 중...";
+          blob = await heic2any({
+            blob: file,
+            toType: 'image/jpeg',
+            quality: 0.9
+          });
+        } catch (err) {
+          document.getElementById("result").innerText =
+            "❌ HEIC 변환 오류: " + err.message;
+          return;
+        }
+      }
+
+      // Blob → DataURL → 이미지 → 캔버스 그리기
       const reader = new FileReader();
       reader.onload = () => {
         const img = new Image();
@@ -85,35 +109,35 @@
           ctx.clearRect(0, 0, 300, 300);
           ctx.drawImage(img, sx, sy, side, side, 0, 0, 300, 300);
           imageDataUrl = canvas.toDataURL("image/png");
+          document.getElementById("result").innerText = ""; // 초기화
         };
         img.src = reader.result;
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(blob);
     });
 
-      function upload() {
-  if (!imageDataUrl) return alert("사진을 먼저 선택하세요.");
+    function upload() {
+      if (!imageDataUrl) return alert("사진을 먼저 선택하세요.");
 
-  // ⏳ 업로드 중 메시지 표시
-  document.getElementById("result").innerText = "⏳ 업로드 중...";
+      document.getElementById("result").innerText = "⏳ 업로드 중...";
 
-  const form = new FormData();
-  form.append("image", imageDataUrl);
+      const form = new FormData();
+      form.append("image", imageDataUrl);
 
-  fetch("https://script.google.com/macros/s/AKfycbw-oJeAT3xlDl1vRUOfItaYyJ_KTxuq1qHnlVavbhKOch_0vxPYZj-YKnOHiiH80JIP/exec", {
-    method: "POST",
-    body: form
-  })
-  .then(res => res.text())
-  .then(res => {
-    document.getElementById("result").innerText = res.includes("SUCCESS")
-      ? "✅ 업로드 완료!"
-      : "❌ 업로드 실패: " + res;
-  })
-  .catch(err => {
-    document.getElementById("result").innerText = "❌ 오류 발생: " + err.message;
-  });
-}
+      fetch("https://script.google.com/macros/s/AKfycbw-oJeAT3xlDl1vRUOfItaYyJ_KTxuq1qHnlVavbhKOch_0vxPYZj-YKnOHiiH80JIP/exec", {
+        method: "POST",
+        body: form
+      })
+      .then(res => res.text())
+      .then(res => {
+        document.getElementById("result").innerText = res.includes("SUCCESS")
+          ? "✅ 업로드 완료!"
+          : "❌ 업로드 실패: " + res;
+      })
+      .catch(err => {
+        document.getElementById("result").innerText = "❌ 오류 발생: " + err.message;
+      });
+    }
   </script>
 </body>
 </html>
