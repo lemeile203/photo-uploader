@@ -92,18 +92,28 @@
     });
 
       function upload() {
-      if (!imageDataUrl) return alert("사진을 먼저 선택하세요.");
-      const form = new FormData();
-      form.append("image", imageDataUrl);
-      fetch("https://script.google.com/macros/s/AKfycbw-oJeAT3xlDl1vRUOfItaYyJ_KTxuq1qHnlVavbhKOch_0vxPYZj-YKnOHiiH80JIP/exec", {
-        method: "POST",
-        body: form
-      }).then(res => res.text()).then(res => {
-        document.getElementById("result").innerText = res.includes("SUCCESS")
-          ? "✅ 업로드 완료!"
-          : "❌ 업로드 실패: " + res;
-      });
-    }
+  if (!imageDataUrl) return alert("사진을 먼저 선택하세요.");
+
+  // ⏳ 업로드 중 메시지 표시
+  document.getElementById("result").innerText = "⏳ 업로드 중...";
+
+  const form = new FormData();
+  form.append("image", imageDataUrl);
+
+  fetch("https://script.google.com/macros/s/AKfycbw-oJeAT3xlDl1vRUOfItaYyJ_KTxuq1qHnlVavbhKOch_0vxPYZj-YKnOHiiH80JIP/exec", {
+    method: "POST",
+    body: form
+  })
+  .then(res => res.text())
+  .then(res => {
+    document.getElementById("result").innerText = res.includes("SUCCESS")
+      ? "✅ 업로드 완료!"
+      : "❌ 업로드 실패: " + res;
+  })
+  .catch(err => {
+    document.getElementById("result").innerText = "❌ 오류 발생: " + err.message;
+  });
+}
   </script>
 </body>
 </html>
