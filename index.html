@@ -43,21 +43,19 @@
       reader.readAsDataURL(file);
     });
 
-   function upload() {
-  if (!imageDataUrl) return alert("사진을 먼저 선택하세요.");
-
-  fetch("https://script.google.com/macros/s/AKfycbw8QVgHqDkc37Ha_OeCirdIk4wwGvo-_CVCmURnDKeN3D_Xnm44Ccwy3aDNVu11mFVa/exec", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ image: imageDataUrl })
-  })
-  .then(res => res.text())
-  .then(res => {
-    document.getElementById("result").innerText = res.includes("SUCCESS")
-      ? "✅ 업로드 완료!"
-      : "❌ 업로드 실패: " + res;
-  });
-}
-</script>
+    function upload() {
+      if (!imageDataUrl) return alert("사진을 먼저 선택하세요.");
+      const form = new FormData();
+      form.append("image", imageDataUrl);
+      fetch("https://script.google.com/macros/s/AKfycbxj4HmuG8VnB8SFrjrrQDVjs_pg8AAfGfXdKh3A1lHzlFC3OkGDfRtdSqxosS57w0w/exec", {
+        method: "POST",
+        body: form
+      }).then(res => res.text()).then(res => {
+        document.getElementById("result").innerText = res.includes("SUCCESS")
+          ? "✅ 업로드 완료!"
+          : "❌ 업로드 실패: " + res;
+      });
+    }
+  </script>
 </body>
 </html>
