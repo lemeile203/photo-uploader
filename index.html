@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>사진 업로드</title>
+  <title>사진촬영</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://unpkg.com/cropperjs"></script>
   <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css" />
@@ -30,12 +30,7 @@
       background-color: #fff;
     }
 
-    input[type="file"] {
-      margin-top: 15px;
-      font-size: 1rem;
-    }
-
-    button {
+    #customButton, button {
       margin-top: 15px;
       background-color: #007BFF;
       color: white;
@@ -46,7 +41,7 @@
       cursor: pointer;
     }
 
-    button:hover {
+    #customButton:hover, button:hover {
       background-color: #0056b3;
     }
 
@@ -59,11 +54,16 @@
 </head>
 <body>
   <h2>사진을 업로드해 주세요</h2>
-  <input type="file" accept="image/*" id="inputImage" />
+
+  <!-- 숨긴 파일 선택 input -->
+  <input type="file" accept="image/*" id="inputImage" capture="environment" style="display:none;" />
+
+  <!-- 사용자 친화적 버튼 -->
+  <button id="customButton">📷 촬영하기</button>
   <br />
   <canvas id="preview" width="300" height="300"></canvas>
   <br />
-  <button onclick="upload()">Drive에 업로드</button>
+  <button onclick="upload()">사진 보내기</button>
   <p id="result"></p>
 
   <script>
@@ -71,6 +71,11 @@
     const canvas = document.getElementById('preview');
     const ctx = canvas.getContext('2d');
     let imageDataUrl;
+
+    // 사용자 버튼 클릭 시 input 파일 선택 실행
+    document.getElementById("customButton").addEventListener("click", () => {
+      input.click();
+    });
 
     input.addEventListener('change', async e => {
       const file = e.target.files[0];
