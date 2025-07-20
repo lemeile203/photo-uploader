@@ -28,42 +28,25 @@
       aspect-ratio: 1;
       border: 1px solid #ccc;
       background-color: #fff;
-      margin-top: 10px;
     }
 
-    input[type="file"] {
-      display: none;
-    }
+   input[type="file"] {
+   margin-top: 15px;
+   font-size: 1rem;
+   }
 
-    /* 📷 灰色按钮 */
-    .gray-btn {
-      margin-top: 15px;
-      background-color: #ccc;
-      color: #333;
-      border: none;
-      padding: 8px 20px;
-      font-size: 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .gray-btn:hover {
-      background-color: #bbb;
-    }
-
-    /* 📤 蓝色按钮 */
-    .blue-btn {
+      #customButton, button {
       margin-top: 15px;
       background-color: #007BFF;
       color: white;
       border: none;
-      padding: 8px 20px;
+      padding: 10px 20px;
       font-size: 1rem;
       border-radius: 6px;
       cursor: pointer;
     }
 
-    .blue-btn:hover {
+     #customButton, button:hover {
       background-color: #0056b3;
     }
 
@@ -76,16 +59,13 @@
 </head>
 <body>
   <h2>사진을 업로드해 주세요</h2>
-
-  <!-- 숨긴 파일 선택 input -->
-  <input type="file" accept="image/*" id="inputImage" />
-
-  <!-- 사용자 친화적 버튼 -->
-  <button class="gray-btn" id="customButton">📷 촬영하기</button>
+  
+  <input type="file" accept="image/*" id="inputImage" style="display:none;" />
+  <button id="customButton">📷 사진 선택</button>
   <br />
   <canvas id="preview" width="300" height="300"></canvas>
   <br />
-  <button class="blue-btn" onclick="upload()">사진 보내기</button>
+  <button onclick="upload()">사진 보내기</button>
   <p id="result"></p>
 
   <script>
@@ -93,10 +73,6 @@
     const canvas = document.getElementById('preview');
     const ctx = canvas.getContext('2d');
     let imageDataUrl;
-
-    document.getElementById("customButton").addEventListener("click", () => {
-      input.click();
-    });
 
     input.addEventListener('change', async e => {
       const file = e.target.files[0];
