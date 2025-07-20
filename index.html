@@ -28,14 +28,15 @@
       aspect-ratio: 1;
       border: 1px solid #ccc;
       background-color: #fff;
+      margin-top: 5px;
     }
 
     #customButton, button {
       margin-top: 15px;
-      background-color: #007BFF;
-      color: white;
+      background-color: #ccc;
+      color: #333;
       border: none;
-      padding: 10px 20px;
+      padding: 8px 20px;
       font-size: 1rem;
       border-radius: 6px;
       cursor: pointer;
@@ -56,10 +57,10 @@
   <h2>사진을 업로드해 주세요</h2>
 
   <!-- 숨긴 파일 선택 input -->
-  <input type="file" accept="image/*" id="inputImage" capture="environment" style="display:none;" />
+  <input type="file" accept="image/*" id="inputImage" style="display:none;" />
 
   <!-- 사용자 친화적 버튼 -->
-  <button id="customButton">📷 촬영하기</button>
+  <button id="customButton">📷 사진 선택</button>
   <br />
   <canvas id="preview" width="300" height="300"></canvas>
   <br />
