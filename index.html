@@ -73,7 +73,10 @@
     const canvas = document.getElementById('preview');
     const ctx = canvas.getContext('2d');
     let imageDataUrl;
-
+ document.getElementById("customButton").addEventListener("click", () => {
+      input.click();
+    });
+    
     input.addEventListener('change', async e => {
       const file = e.target.files[0];
       if (!file) return;
