@@ -140,9 +140,9 @@ let originalImageUrl = null;
         }
       }
 
-      const reader = new FileReader();
-      reader.onload = () => {
+       const reader = new FileReader();
       originalImageUrl = reader.result; 
+      reader.onload = () => {
         const img = new Image();
         img.onload = () => {
           const side = Math.min(img.width, img.height);
@@ -172,59 +172,31 @@ ctx.fillText(selectedText, 150, 25);
 
  document.querySelectorAll('input[name="textOption"]').forEach(radio => {
   radio.addEventListener('change', () => {
-    if (!originalImageUrl) return;
+    if (!originalImageUrl) return; // 还没有图片就不更新
 
     const img = new Image();
     img.onload = () => {
-      drawProcessedImage(img);
+      const side = Math.min(img.width, img.height);
+      const sx = (img.width - side) / 2;
+      const sy = (img.height - side) / 2;
+      canvas.width = 300;
+      canvas.height = 350;
+      ctx.clearRect(0, 0, 300, 350);
+      ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 350);
+
+      ctx.fillStyle = "#2ecc71";
+      ctx.fillRect(0, 0, 300, 50);
+
+      ctx.font = "bold 20px sans-serif";
+      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const selectedText = document.querySelector('input[name="textOption"]:checked').value;
+      ctx.fillText(selectedText, 150, 25);
     };
     img.src = originalImageUrl;
   });
 });
-    let originalImageUrl = null;
-let imageDataUrl = null;
-
-function drawProcessedImage(img) {
-  const side = Math.min(img.width, img.height);
-  const sx = (img.width - side) / 2;
-  const sy = (img.height - side) / 2;
-
-  canvas.width = 300;
-  canvas.height = 350;
-
-  ctx.clearRect(0, 0, 300, 350);
-
-  // 绘制主图像（300x300，从y=50开始）
-  ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 300);
-
-  // 绘制绿色顶部条
-  ctx.fillStyle = "#2ecc71";
-  ctx.fillRect(0, 0, 300, 50);
-
-  // 添加文字
-  ctx.font = "bold 20px sans-serif";
-  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  const selectedText = document.querySelector('input[name="textOption"]:checked').value;
-  ctx.fillText(selectedText, 150, 25);
-
-  // 保存处理后的图像
-  imageDataUrl = canvas.toDataURL("image/png");
-}
-
-// 拍照或上传后加载图片
-const reader = new FileReader();
-reader.onload = () => {
-  originalImageUrl = reader.result;
-  const img = new Image();
-  img.onload = () => {
-    drawProcessedImage(img);
-    document.getElementById("result").innerText = "";
-  };
-  img.src = originalImageUrl;
-};
-reader.readAsDataURL(blob); // 确保 blob 是可用的
 
     
 
