@@ -23,12 +23,12 @@
     }
 
     #preview {
-  width: 90vw;
-  max-width: 300px;
-  height: 400px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  margin-top: 25px;
+  width: 90vw;      
+      max-width: 300px;      
+      aspect-ratio: 1;      
+       border: 1px solid #ccc;
+    background-color: #fff;
+    margin-top: 25px;
     }
 
     input[type="file"] {
@@ -83,7 +83,7 @@
   <!-- 사용자 친화적 버튼 -->
   <button class="gray-btn" id="customButton">📷 사진 선택</button>
   <br />
-  <canvas id="preview" width="300" height="400"></canvas>
+  <canvas id="preview" width="300" height="350"></canvas>
   <br />
   <button class="blue-btn" onclick="upload()">사진 보내기</button>
   <p id="result"></p>
@@ -130,17 +130,17 @@
           const sx = (img.width - side) / 2;
           const sy = (img.height - side) / 2;
           canvas.width = 300;
-          canvas.height = 400;
-          ctx.clearRect(0, 0, 300, 400);
-          ctx.drawImage(img, sx, sy, side, side, 0, 0, 300, 400);
+          canvas.height = 350;
+          ctx.clearRect(0, 0, 300, 300);
+          ctx.drawImage(img, sx, sy, side, side, 0, 0, 300, 300);
  ctx.fillStyle = "#2ecc71"; // 或者 "green"，你可以换成任何你想要的绿色
-    ctx.fillRect(0, 0, 300, 80);
+    ctx.fillRect(0, 0, 300, 50);
           
-ctx.font = "bold 16px sans-serif";
+        ctx.font = "bold 20px sans-serif";
         ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
         ctx.textAlign = "center";
           ctx.textBaseline = "middle"; // 垂直居中
-        ctx.fillText("버려진 것의 아름다움 발견하기", 150, 40); 
+        ctx.fillText("버려진 것의 아름다움 발견하기", 150, 25); 
           
           imageDataUrl = canvas.toDataURL("image/png");
           document.getElementById("result").innerText = "";
