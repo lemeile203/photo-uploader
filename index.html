@@ -238,6 +238,7 @@ document.querySelectorAll('input[name="textOption"]').forEach(radio => {
     function upload() {
      
      const selectedTextInput = document.querySelector('input[name="textOption"]:checked');
+      const selectedGoal = selectedInput ? selectedInput.value : "";
      if (!selectedTextInput) {
      alert("실천목표를 선택하세요.");
      return;
@@ -251,8 +252,9 @@ document.querySelectorAll('input[name="textOption"]').forEach(radio => {
 
       const form = new FormData();
       form.append("image", imageDataUrl);
+      form.append("goal", selectedGoal);
 
-      fetch("https://script.google.com/macros/s/AKfycbw-oJeAT3xlDl1vRUOfItaYyJ_KTxuq1qHnlVavbhKOch_0vxPYZj-YKnOHiiH80JIP/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbzvx72TtKW_UJTQ6MhEJPcOStGAaTU79a4dADc_msWyega_VBeAmrKWLHoOhLzSsEq5 /exec", {
         method: "POST",
         body: form
       })
