@@ -110,7 +110,7 @@
     const canvas = document.getElementById('preview');
     const ctx = canvas.getContext('2d');
     let imageDataUrl = null;
-let originalImageUrl = null; 
+    let originalImageUrl = null; 
 
     document.getElementById("customButton").addEventListener("click", () => {
       input.click();
@@ -154,17 +154,21 @@ reader.onload = () => {
     ctx.clearRect(0, 0, 300, 350);
     ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 300);
 
-    const selectedText = document.querySelector('input[name="textOption"]:checked').value;
-    ctx.fillStyle = getColorByText(selectedText); // 修改颜色
-    ctx.fillRect(0, 0, 300, 50);
+let selectedInput = document.querySelector('input[name="textOption"]:checked');
+let selectedText = selectedInput ? selectedInput.value : null;
 
-    ctx.font = "bold 20px sans-serif";
-    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+// 如果没选，使用默认颜色，否则根据文字获取颜色
+ctx.fillStyle = selectedText ? getColorByText(selectedText) : "#2ecc71";
+ctx.fillRect(0, 0, 300, 50);
 
-    
-    ctx.fillText(selectedText, 150, 25);
+// 如果有文字才绘制文本
+if (selectedText) {
+  ctx.font = "bold 20px sans-serif";
+  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(selectedText, 150, 25);
+}
 
     imageDataUrl = canvas.toDataURL("image/png"); // ✅ 保存加工图
     document.getElementById("result").innerText = "";
