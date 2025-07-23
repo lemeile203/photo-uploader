@@ -154,7 +154,7 @@ reader.onload = () => {
     ctx.clearRect(0, 0, 300, 350);
     ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 300);
 
-    ctx.fillStyle = "#2ecc71";
+    ctx.fillStyle = getColorByText(selectedText); // 修改颜色
     ctx.fillRect(0, 0, 300, 50);
 
     ctx.font = "bold 20px sans-serif";
@@ -187,7 +187,7 @@ document.querySelectorAll('input[name="textOption"]').forEach(radio => {
       ctx.clearRect(0, 0, 300, 350);
       ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 300);
 
-      ctx.fillStyle = "#2ecc71";
+      ctx.fillStyle = getColorByText(selectedText); // 修改颜色
       ctx.fillRect(0, 0, 300, 50);
 
       ctx.font = "bold 20px sans-serif";
@@ -204,7 +204,30 @@ document.querySelectorAll('input[name="textOption"]').forEach(radio => {
   });
 });
 
-    
+    function getColorByText(text) {
+  switch (text) {
+    case "버려진 것의 아름다움 발견하기":
+      return "#f1c40f"; // 黄色
+    case "쓰임을 찾아 계속 사용하기":
+      return "#3498db"; // 蓝色
+    case "나에게 맞게 바꾸어 보기":
+      return "#9b59b6"; // 紫色
+    case "신체적 차이 배려하기":
+      return "#e67e22"; // 橙色
+    case "성장하는 대상 보살피기":
+      return "#1abc9c"; // 青绿色
+    case "기술에 따른 행동변화 이해하기":
+      return "#34495e"; // 深灰色
+    case "익숙함 극복하기":
+      return "#e74c3c"; // 红色
+    case "지속가능 공동체 만들기":
+      return "#27ae60"; // 深绿色
+    case "인간의 보편성 인식하기":
+      return "#7f8c8d"; // 灰色
+    default:
+      return "#2ecc71"; // 默认绿色
+  }
+}
 
     function upload() {
       if (!imageDataUrl) return alert("사진을 먼저 선택하세요.");
