@@ -169,31 +169,37 @@ ctx.fillText(selectedText, 150, 25);
     });
 
     document.querySelectorAll('input[name="textOption"]').forEach(radio => {
+
   radio.addEventListener('change', () => {
     if (!imageDataUrl) return; // 还没有图片就不更新
 
     const img = new Image();
-    img.onload = () => {
-      const side = Math.min(img.width, img.height);
-      const sx = (img.width - side) / 2;
-      const sy = (img.height - side) / 2;
-      canvas.width = 300;
-      canvas.height = 350;
-      ctx.clearRect(0, 50, 300, 350);
-      ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 300);
+  img.onload = () => {
+    canvas.width = 300;
+    canvas.height = 350;
 
-      ctx.fillStyle = "#2ecc71";
-      ctx.fillRect(0, 0, 300, 50);
+    // 清除整个 canvas，确保没有残影
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      ctx.font = "bold 20px sans-serif";
-      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      const selectedText = document.querySelector('input[name="textOption"]:checked').value;
-      ctx.fillText(selectedText, 150, 25);
-    };
-    img.src = imageDataUrl;
-  });
+    // 绘制上部绿色框
+    ctx.fillStyle = "#2ecc71";
+    ctx.fillRect(0, 0, 300, 50);
+
+    // 绘制图片（统一保持 y=50 开始）
+    const side = Math.min(img.width, img.height);
+    const sx = (img.width - side) / 2;
+    const sy = (img.height - side) / 2;
+    ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 300);
+
+    // 绘制文字
+    ctx.font = "bold 20px sans-serif";
+    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const selectedText = document.querySelector('input[name="textOption"]:checked').value;
+    ctx.fillText(selectedText, 150, 25);
+  };
+  img.src = imageDataUrl;
 });
     
 
