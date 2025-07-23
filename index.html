@@ -77,6 +77,18 @@
 <body>
   <h2>‘함께 디자인하는 포용: 실천을 통한 변화’<br />내가 할 수 있는 실천 목표 정하기</h2>
 
+  <div id="options" style="text-align: left; margin: 20px auto; max-width: 300px;">
+  <label><input type="radio" name="textOption" value="버려진 것의 아름다움 발견하기" checked /> 버려진 것의 아름다움 발견하기</label><br />
+  <label><input type="radio" name="textOption" value="쓰임을 찾아 계속 사용하기" /> 쓰임을 찾아 계속 사용하기</label><br />
+  <label><input type="radio" name="textOption" value="나에게 맞게 바꾸어 보기" /> 나에게 맞게 바꾸어 보기</label><br />
+  <label><input type="radio" name="textOption" value="신체적 차이 배려하기" /> 신체적 차이 배려하기</label><br />
+  <label><input type="radio" name="textOption" value="성장하는 대상 보살피기" /> 성장하는 대상 보살피기</label><br />
+  <label><input type="radio" name="textOption" value="기술에 따른 행동변화 이해하기" /> 기술에 따른 행동변화 이해하기</label><br />
+  <label><input type="radio" name="textOption" value="익숙함 극복하기" /> 익숙함 극복하기</label><br />
+  <label><input type="radio" name="textOption" value="지속가능 공동체 만들기" /> 지속가능 공동체 만들기</label><br />
+  <label><input type="radio" name="textOption" value="인간의 보편성 인식하기" /> 인간의 보편성 인식하기</label>
+</div>
+  
   <!-- 숨긴 파일 선택 input -->
   <input type="file" accept="image/*" id="inputImage" />
 
@@ -140,7 +152,8 @@
         ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
         ctx.textAlign = "center";
           ctx.textBaseline = "middle"; // 垂直居中
-        ctx.fillText("버려진 것의 아름다움 발견하기", 150, 25); 
+        const selectedText = document.querySelector('input[name="textOption"]:checked').value;
+ctx.fillText(selectedText, 150, 25);
           
           imageDataUrl = canvas.toDataURL("image/png");
           document.getElementById("result").innerText = "";
