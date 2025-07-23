@@ -165,7 +165,7 @@ ctx.fillText(selectedText, 150, 25);
           imageDataUrl = canvas.toDataURL("image/png");
           document.getElementById("result").innerText = "";
         };
-        img.src = originalImageUrl;
+        img.src = reader.result;
       };
       reader.readAsDataURL(blob);
     });
