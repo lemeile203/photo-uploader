@@ -75,7 +75,8 @@
   </style>
 </head>
 <body>
-  <h2>사진을 업로드해 주세요</h2>
+  <h2>‘함께 디자인하는 포용: 실천을 통한 변화’
+내가 할 수 있는 실천 목표 정하기</h2>
 
   <!-- 숨긴 파일 선택 input -->
   <input type="file" accept="image/*" id="inputImage" />
@@ -131,8 +132,8 @@
           const sy = (img.height - side) / 2;
           canvas.width = 300;
           canvas.height = 350;
-          ctx.clearRect(0, 0, 300, 300);
-          ctx.drawImage(img, sx, sy, side, side, 0, 0, 300, 300);
+          ctx.clearRect(0, 50, 300, 300);
+          ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 300);
  ctx.fillStyle = "#2ecc71"; // 或者 "green"，你可以换成任何你想要的绿色
     ctx.fillRect(0, 0, 300, 50);
           
