@@ -158,7 +158,7 @@ let selectedInput = document.querySelector('input[name="textOption"]:checked');
 let selectedText = selectedInput ? selectedInput.value : null;
 
 // 如果没选，使用默认颜色，否则根据文字获取颜色
-ctx.fillStyle = selectedText ? getColorByText(selectedText) : "#2ecc71";
+ctx.fillStyle = selectedText ? getColorByText(selectedText) : "#939393";
 ctx.fillRect(0, 0, 300, 50);
 
 // 如果有文字才绘制文本
@@ -213,25 +213,25 @@ document.querySelectorAll('input[name="textOption"]').forEach(radio => {
     function getColorByText(text) {
   switch (text) {
     case "버려진 것의 아름다움 발견하기":
-      return "#f1c40f"; // 黄色
+      return "#ED40C4"; // 玫红色
     case "쓰임을 찾아 계속 사용하기":
-      return "#3498db"; // 蓝色
+      return "#00A400"; // 绿色
     case "나에게 맞게 바꾸어 보기":
-      return "#9b59b6"; // 紫色
+      return "#FFD700"; // 明黄色
     case "신체적 차이 배려하기":
-      return "#e67e22"; // 橙色
+      return "#22E7AD"; // 青绿
     case "성장하는 대상 보살피기":
-      return "#1abc9c"; // 青绿色
+      return "#7E22C6"; // 紫色
     case "기술에 따른 행동변화 이해하기":
-      return "#34495e"; // 深灰色
+      return "#2257F3"; // 蓝色
     case "익숙함 극복하기":
-      return "#e74c3c"; // 红色
+      return "#FF8700"; // 深黄
     case "지속가능 공동체 만들기":
-      return "#27ae60"; // 深绿色
+      return "#E00000"; // 橘红
     case "인간의 보편성 인식하기":
-      return "#7f8c8d"; // 灰色
+      return "#00C3FF"; // 天蓝
     default:
-      return "#2ecc71"; // 默认绿色
+      return "#939393"; // 默认灰色
   }
 }
 
