@@ -141,6 +141,7 @@ let originalImageUrl = null;
       }
 
       const reader = new FileReader();
+      originalImageUrl = reader.result; 
       reader.onload = () => {
         const img = new Image();
         img.onload = () => {
@@ -171,7 +172,7 @@ ctx.fillText(selectedText, 150, 25);
 
  document.querySelectorAll('input[name="textOption"]').forEach(radio => {
   radio.addEventListener('change', () => {
-    if (!originalImageUrl;) return; // 还没有图片就不更新
+    if (!originalImageUrl) return; // 还没有图片就不更新
 
     const img = new Image();
     img.onload = () => {
