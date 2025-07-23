@@ -232,12 +232,16 @@ document.querySelectorAll('input[name="textOption"]').forEach(radio => {
 }
 
     function upload() {
-      if (!imageDataUrl) return alert("사진을 먼저 선택하세요.");
+     
      const selectedTextInput = document.querySelector('input[name="textOption"]:checked');
      if (!selectedTextInput) {
      alert("실천목표를 선택하세요.");
      return;
      }
+     if (!imageDataUrl) {
+    alert("사진을 먼저 선택하세요.");
+    return;
+    }
 
       document.getElementById("result").innerText = "⏳ 업로드 중...";
 
