@@ -141,8 +141,8 @@ let originalImageUrl = null;
       }
 
       const reader = new FileReader();
-      originalImageUrl = reader.result; 
       reader.onload = () => {
+originalImageUrl = reader.result; 
         const img = new Image();
         img.onload = () => {
           const side = Math.min(img.width, img.height);
