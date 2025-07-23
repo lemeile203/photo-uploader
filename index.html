@@ -154,6 +154,7 @@ reader.onload = () => {
     ctx.clearRect(0, 0, 300, 350);
     ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 300);
 
+    const selectedText = document.querySelector('input[name="textOption"]:checked').value;
     ctx.fillStyle = getColorByText(selectedText); // 修改颜色
     ctx.fillRect(0, 0, 300, 50);
 
@@ -162,7 +163,7 @@ reader.onload = () => {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    const selectedText = document.querySelector('input[name="textOption"]:checked').value;
+    
     ctx.fillText(selectedText, 150, 25);
 
     imageDataUrl = canvas.toDataURL("image/png"); // ✅ 保存加工图
@@ -187,6 +188,7 @@ document.querySelectorAll('input[name="textOption"]').forEach(radio => {
       ctx.clearRect(0, 0, 300, 350);
       ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 300);
 
+      const selectedText = document.querySelector('input[name="textOption"]:checked').value;
       ctx.fillStyle = getColorByText(selectedText); // 修改颜色
       ctx.fillRect(0, 0, 300, 50);
 
@@ -195,7 +197,7 @@ document.querySelectorAll('input[name="textOption"]').forEach(radio => {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      const selectedText = document.querySelector('input[name="textOption"]:checked').value;
+      
       ctx.fillText(selectedText, 150, 25);
 
       imageDataUrl = canvas.toDataURL("image/png");
