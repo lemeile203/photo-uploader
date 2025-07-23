@@ -132,6 +132,11 @@
           canvas.width = canvas.height = 300;
           ctx.clearRect(0, 0, 300, 300);
           ctx.drawImage(img, sx, sy, side, side, 0, 0, 300, 300);
+ctx.font = "bold 16px sans-serif";
+        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+        ctx.textAlign = "center";
+        ctx.fillText("버려진 것의 아름다움 발견하기", 150, 285); // 图像底部中间
+          
           imageDataUrl = canvas.toDataURL("image/png");
           document.getElementById("result").innerText = "";
         };
