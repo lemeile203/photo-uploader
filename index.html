@@ -105,161 +105,206 @@
   <button class="blue-btn" onclick="upload()">참여하기</button>
   <p id="result"></p>
 
-  <script>
-    const input = document.getElementById('inputImage');
-    const canvas = document.getElementById('preview');
-    const ctx = canvas.getContext('2d');
-    let imageDataUrl = null;
-    let originalImageUrl = null; 
+<script>
+  const input = document.getElementById('inputImage');
+  const canvas = document.getElementById('preview');
+  const ctx = canvas.getContext('2d');
 
-    document.getElementById("customButton").addEventListener("click", () => {
-      input.click();
+  let imageDataUrl = null;
+  let originalImageUrl = null;
+
+  // ① 选项ID → 图标路径（按你的 data-id: a~i）
+  const ICONS = {
+    a: "./icons/a.png",
+    b: "./icons/b.png",
+    c: "./icons/c.png",
+    d: "./icons/d.png",
+    e: "./icons/e.png",
+    f: "./icons/f.png",
+    g: "./icons/g.png",
+    h: "./icons/h.png",
+    i: "./icons/i.png",
+  };
+
+  // ② 预加载并做简单缓存，避免重复下载
+  const iconCache = {}; // { id: HTMLImageElement }
+  function loadIconById(id) {
+    return new Promise((resolve, reject) => {
+      if (!id || !ICONS[id]) return resolve(null);
+      if (iconCache[id] && iconCache[id].complete) return resolve(iconCache[id]);
+
+      const img = new Image();
+      img.crossOrigin = "anonymous"; // 若与图标同域也没关系
+      img.onload = () => {
+        iconCache[id] = img;
+        resolve(img);
+      };
+      img.onerror = reject;
+      img.src = ICONS[id];
     });
+  }
 
-    input.addEventListener('change', async e => {
-      const file = e.target.files[0];
-      if (!file) return;
+  document.getElementById("customButton").addEventListener("click", () => {
+    input.click();
+  });
 
-      let blob = file;
+  input.addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-      if (
-        file.type === 'image/heic' || file.type === 'image/heif' ||
-        /\.heic$/i.test(file.name)
-      ) {
-        try {
-          document.getElementById("result").innerText = "🔄 HEIC 변환 중...";
-          blob = await heic2any({
-            blob: file,
-            toType: 'image/jpeg',
-            quality: 0.9
-          });
-        } catch (err) {
-          document.getElementById("result").innerText =
-            "❌ HEIC 변환 오류: " + err.message;
-          return;
-        }
+    let blob = file;
+
+    if (
+      file.type === 'image/heic' || file.type === 'image/heif' ||
+      /\.heic$/i.test(file.name)
+    ) {
+      try {
+        document.getElementById("result").innerText = "🔄 HEIC 변환 중...";
+        blob = await heic2any({
+          blob: file,
+          toType: 'image/jpeg',
+          quality: 0.9
+        });
+      } catch (err) {
+        document.getElementById("result").innerText =
+          "❌ HEIC 변환 오류: " + err.message;
+        return;
       }
+    }
 
-       const reader = new FileReader();
-reader.onload = () => {
-  originalImageUrl = reader.result; // ✅ 正确设置原始图像数据
+    const reader = new FileReader();
+    reader.onload = async () => {
+      originalImageUrl = reader.result;
 
-  const img = new Image();
-  img.onload = () => {
-    const side = Math.min(img.width, img.height);
-    const sx = (img.width - side) / 2;
-    const sy = (img.height - side) / 2;
+      // 读取当前选择
+      const selectedInput = document.querySelector('input[name="textOption"]:checked');
+      const selectedText = selectedInput ? selectedInput.value : null;
+      const selectedId = selectedInput ? selectedInput.dataset.id : null;
+
+      await renderCanvas(originalImageUrl, selectedText, selectedId);
+      imageDataUrl = canvas.toDataURL("image/png");
+      document.getElementById("result").innerText = "";
+    };
+    reader.readAsDataURL(blob);
+  });
+
+  // 单选项改变时重绘
+  document.querySelectorAll('input[name="textOption"]').forEach(radio => {
+    radio.addEventListener('change', async () => {
+      if (!originalImageUrl) return;
+      const selectedInput = document.querySelector('input[name="textOption"]:checked');
+      const selectedText = selectedInput ? selectedInput.value : null;
+      const selectedId = selectedInput ? selectedInput.dataset.id : null;
+
+      await renderCanvas(originalImageUrl, selectedText, selectedId);
+      imageDataUrl = canvas.toDataURL("image/png");
+    });
+  });
+
+  // ③ 负责把照片、顶部色条、文字、右上角图标都画上去
+  async function renderCanvas(originalUrl, selectedText, selectedId) {
+    // 先并行准备底图与图标
+    const baseImg = await loadBaseImage(originalUrl);
+    const iconImg = selectedId ? await loadIconById(selectedId) : null;
+
+    const side = Math.min(baseImg.width, baseImg.height);
+    const sx = (baseImg.width - side) / 2;
+    const sy = (baseImg.height - side) / 2;
+
     canvas.width = 300;
     canvas.height = 350;
     ctx.clearRect(0, 0, 300, 350);
-    ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 300);
 
-let selectedInput = document.querySelector('input[name="textOption"]:checked');
-let selectedText = selectedInput ? selectedInput.value : null;
+    // 底图（裁成正方形放到下方 300x300）
+    ctx.drawImage(baseImg, sx, sy, side, side, 0, 50, 300, 300);
 
-// 如果没选，使用默认颜色，否则根据文字获取颜色
-ctx.fillStyle = selectedText ? getColorByText(selectedText) : "#939393";
-ctx.fillRect(0, 0, 300, 50);
+    // 顶部色条
+    const barColor = selectedText ? getColorByText(selectedText) : "#939393";
+    ctx.fillStyle = barColor;
+    ctx.fillRect(0, 0, 300, 50);
 
-// 如果有文字才绘制文本
-if (selectedText) {
-  ctx.font = "bold 20px sans-serif";
-  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(selectedText, 150, 25);
-}
-
-    imageDataUrl = canvas.toDataURL("image/png"); // ✅ 保存加工图
-    document.getElementById("result").innerText = "";
-  };
-  img.src = reader.result;
-};
-reader.readAsDataURL(blob);
-    });
-
-document.querySelectorAll('input[name="textOption"]').forEach(radio => {
-  radio.addEventListener('change', () => {
-    if (!originalImageUrl) return;
-
-    const img = new Image();
-    img.onload = () => {
-      const side = Math.min(img.width, img.height);
-      const sx = (img.width - side) / 2;
-      const sy = (img.height - side) / 2;
-      canvas.width = 300;
-      canvas.height = 350;
-      ctx.clearRect(0, 0, 300, 350);
-      ctx.drawImage(img, sx, sy, side, side, 0, 50, 300, 300);
-
-      const selectedText = document.querySelector('input[name="textOption"]:checked').value;
-      ctx.fillStyle = getColorByText(selectedText); // 修改颜色
-      ctx.fillRect(0, 0, 300, 50);
-
+    // 文字（有选项才绘制）
+    if (selectedText) {
       ctx.font = "bold 20px sans-serif";
       ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-
-      
       ctx.fillText(selectedText, 150, 25);
-
-      imageDataUrl = canvas.toDataURL("image/png");
-    };
-    img.src = originalImageUrl; // ✅ 重新从原始图加载
-  });
-});
-
-    function getColorByText(text) {
-  switch (text) {
-    case "버려진 것의 아름다움 발견하기":
-      return "#ED40C4"; // 玫红色
-    case "쓰임을 찾아 계속 사용하기":
-      return "#00A400"; // 绿色
-    case "나에게 맞게 바꾸어 보기":
-      return "#FFD700"; // 明黄色
-    case "신체적 차이 배려하기":
-      return "#22E7AD"; // 青绿
-    case "성장하는 대상 보살피기":
-      return "#7E22C6"; // 紫色
-    case "기술에 따른 행동변화 이해하기":
-      return "#2257F3"; // 蓝色
-    case "익숙함 극복하기":
-      return "#FF8700"; // 深黄
-    case "지속가능 공동체 만들기":
-      return "#E00000"; // 橘红
-    case "인간의 보편성 인식하기":
-      return "#00C3FF"; // 天蓝
-    default:
-      return "#939393"; // 默认灰色
-  }
-}
-
-function upload() {
-     
-     const selectedTextInput = document.querySelector('input[name="textOption"]:checked');
-     if (!selectedTextInput) {
-     alert("실천목표를 선택하세요.");
-     return;
-     }
-   const selectedGoal = selectedTextInput.value;
-  const selectedGoalId = selectedTextInput.dataset.id; 
-  
-     if (!imageDataUrl) {
-    alert("사진을 선택하세요.");
-    return;
     }
 
-      document.getElementById("result").innerText = "⏳ 업로드 중...";
+    // 右上角图标（有选项才绘制）
+    if (iconImg && selectedId) {
+      const pad = 6;          // 与边缘的内边距
+      const iconSize = 40;    // 你可改为 48 等
+      const x = 300 - iconSize - pad;
+      const y = pad;          // 画在色条内
+      // 可选：在图标下加一点半透明白底，提升可读性
+      // ctx.fillStyle = "rgba(255,255,255,0.25)";
+      // ctx.fillRect(x - 2, y - 2, iconSize + 4, iconSize + 4);
+      ctx.drawImage(iconImg, x, y, iconSize, iconSize);
+    }
+  }
 
-      const form = new FormData();
-      form.append("image", imageDataUrl);
-     form.append("goal", selectedGoal);
+  function loadBaseImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  function getColorByText(text) {
+    switch (text) {
+      case "버려진 것의 아름다움 발견하기":
+        return "#ED40C4";
+      case "쓰임을 찾아 계속 사용하기":
+        return "#00A400";
+      case "나에게 맞게 바꾸어 보기":
+        return "#FFD700";
+      case "신체적 차이 배려하기":
+        return "#22E7AD";
+      case "성장하는 대상 보살피기":
+        return "#7E22C6";
+      case "기술에 따른 행동변화 이해하기":
+        return "#2257F3";
+      case "익숙함 극복하기":
+        return "#FF8700";
+      case "지속가능 공동체 만들기":
+        return "#E00000";
+      case "인간의 보편성 인식하기":
+        return "#00C3FF";
+      default:
+        return "#939393";
+    }
+  }
+
+  function upload() {
+    const selectedTextInput = document.querySelector('input[name="textOption"]:checked');
+    if (!selectedTextInput) {
+      alert("실천목표를 선택하세요.");
+      return;
+    }
+    const selectedGoal = selectedTextInput.value;
+    const selectedGoalId = selectedTextInput.dataset.id;
+
+    if (!imageDataUrl) {
+      alert("사진을 선택하세요.");
+      return;
+    }
+
+    document.getElementById("result").innerText = "⏳ 업로드 중...";
+
+    const form = new FormData();
+    form.append("image", imageDataUrl);
+    form.append("goal", selectedGoal);
     form.append("goalId", selectedGoalId);
-      fetch("https://script.google.com/macros/s/AKfycbyNzuAX7_clDIKJ4qUpGXo_aXmPveI-ICNRGFSgKheFW4fDJlFDyHSWLfNijqKe82mW/exec", {
-        method: "POST",
-        body: form
-      })
+
+    fetch("https://script.google.com/macros/s/AKfycbyNzuAX7_clDIKJ4qUpGXo_aXmPveI-ICNRGFSgKheFW4fDJlFDyHSWLfNijqKe82mW/exec", {
+      method: "POST",
+      body: form
+    })
       .then(res => res.text())
       .then(res => {
         document.getElementById("result").innerText = res.includes("SUCCESS")
@@ -269,7 +314,6 @@ function upload() {
       .catch(err => {
         document.getElementById("result").innerText = "❌ 오류 발생: " + err.message;
       });
-    }
-  </script>
-</body>
-</html>
+  }
+</script>
+
