@@ -227,16 +227,16 @@
     if (selectedText) {
       ctx.font = "bold 20px sans-serif";
       ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-      ctx.textAlign = "center";
+      ctx.textAlign = "left";
       ctx.textBaseline = "middle";
-      ctx.fillText(selectedText, 150, 25);
+      ctx.fillText(selectedText, 50, 25);
     }
 
     // 右上角图标（有选项才绘制）
     if (iconImg && selectedId) {
       const pad = 6;          // 与边缘的内边距
       const iconSize = 40;    // 你可改为 48 等
-      const x = 300 - iconSize - pad;
+      const x = pad;
       const y = pad;          // 画在色条内
       // 可选：在图标下加一点半透明白底，提升可读性
       // ctx.fillStyle = "rgba(255,255,255,0.25)";
