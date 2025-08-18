@@ -296,7 +296,7 @@
   }
 
   function upload() {
-  //  const emailInput = document.getElementById("userEmail").value.trim();
+   const emailInput = document.getElementById("userEmail").value.trim();
 //form.append("email", emailInput);
     const selectedTextInput = document.querySelector('input[name="textOption"]:checked');
     if (!selectedTextInput) {
@@ -317,6 +317,7 @@
     form.append("image", imageDataUrl);
     form.append("goal", selectedGoal);
     form.append("goalId", selectedGoalId);
+    form.append("email", emailInput);
 
     fetch("https://script.google.com/macros/s/AKfycbyNzuAX7_clDIKJ4qUpGXo_aXmPveI-ICNRGFSgKheFW4fDJlFDyHSWLfNijqKe82mW/exec", {
       method: "POST",
