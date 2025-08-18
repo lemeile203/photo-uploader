@@ -106,7 +106,7 @@
   <div style="text-align: center;">
  
    </p>
-  <input type="email" placeholder="이메일 주소 (선택사항)"
+  <input id="userEmail" type="email" placeholder="이메일 주소 (선택사항)"
     style="width: 100%; max-width: 300px; height: 36px;
            font-size: 1.0rem; padding: 6px 10px;
            margin: 4px auto 10px auto;
@@ -297,7 +297,6 @@
 
   function upload() {
    const emailInput = document.getElementById("userEmail").value.trim();
-//form.append("email", emailInput);
     const selectedTextInput = document.querySelector('input[name="textOption"]:checked');
     if (!selectedTextInput) {
       alert("실천목표를 선택하세요.");
