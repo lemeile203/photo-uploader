@@ -93,7 +93,8 @@
 <label><input type="radio" name="textOption" value="지속가능 공동체 만들기" data-id="h" /> 지속가능 공동체 만들기</label>
 <label><input type="radio" name="textOption" value="인간의 보편성 인식하기" data-id="i" /> 인간의 보편성 인식하기</label>
 </div>
-  
+ 
+  <input type="email" id="userEmail" placeholder="이메일 주소 (선택사항)" style="margin: 10px auto; padding: 8px; width: 90%; max-width: 300px; font-size: 1rem;" />
   <!-- 숨긴 파일 선택 input -->
   <input type="file" accept="image/*" id="inputImage" />
 
@@ -281,6 +282,8 @@
   }
 
   function upload() {
+    const emailInput = document.getElementById("userEmail").value.trim();
+form.append("email", emailInput);
     const selectedTextInput = document.querySelector('input[name="textOption"]:checked');
     if (!selectedTextInput) {
       alert("실천목표를 선택하세요.");
