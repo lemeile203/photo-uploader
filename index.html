@@ -218,6 +218,10 @@
     { id: "d", ko: "신체적 차이 배려하기",          en: "Accommodate physical differences" },
     { id: "f", ko: "기술에 따른 행동변화 이해하기",  en: "Understand behavior change with technology" }
   ];
+  const TOP_BAR_FONT = {
+  ko: { size: 18, lineHeight: 22 },
+  en: { size: 18, lineHeight: 22 } // 영어는 항상 같은 크기(통일)
+};
 
   /********************
    * ID별 아이콘/색상 *
@@ -417,13 +421,12 @@
     ctx.fillRect(0, 0, 300, 50);
 
     // 우측 텍스트
-    if (selectedId) {
-      const label = getGoalLabelById(selectedId);
-      ctx.fillStyle = "rgba(255,255,255,0.95)";
-      ctx.textAlign = "right";
-      ctx.textBaseline = "middle";
-      drawFitText(label, 290, 25, 220, 20, 12); // 우측여백 감안해 220px 영역
-    }
+if (selectedId) {
+  const label = getGoalLabelById(selectedId);
+  // 오른쪽 여백 감안: xRight=290, yCenter=25, 텍스트 영역 maxWidth=220
+  drawTopBarText(label, 290, 25, 220);
+}
+
 
     // 좌측 아이콘
     if (iconImg && selectedId) {
@@ -435,22 +438,71 @@
   }
 
   // 텍스트가 길면 폰트 크기 줄이거나 ... 처리
-  function drawFitText(text, x, y, maxWidth, startSize = 20, minSize = 12) {
-    for (let size = startSize; size >= minSize; size--) {
-      ctx.font = `bold ${size}px sans-serif`;
-      if (ctx.measureText(text).width <= maxWidth) {
-        ctx.fillText(text, x, y);
-        return;
+ // 주어진 최대 너비 안에서 최대 2줄로 줄바꿈(두 번째 줄은 필요 시 … 처리)
+function wrapToTwoLines(text, maxWidth) {
+  const lines = [];
+
+  // 영어는 공백 단위로, 한글/중문 등은 글자 단위로 그리디 분할
+  const isEnglish = /^[\x00-\x7F]+$/.test(text.replace(/\s/g, ''));
+  if (isEnglish) {
+    const words = text.trim().split(/\s+/);
+    let line = '';
+    for (const w of words) {
+      const test = line ? line + ' ' + w : w;
+      if (ctx.measureText(test).width <= maxWidth) {
+        line = test;
+      } else {
+        lines.push(line);
+        line = w;
+        if (lines.length === 2) break;
       }
     }
-    // 너무 길면 말줄임
-    ctx.font = `bold ${minSize}px sans-serif`;
-    let t = text;
-    while (t.length && ctx.measureText(t + '…').width > maxWidth) {
-      t = t.slice(0, -1);
+    if (lines.length < 2 && line) lines.push(line);
+  } else {
+    let line = '';
+    for (const ch of [...text.trim()]) {
+      const test = line + ch;
+      if (ctx.measureText(test).width <= maxWidth) {
+        line = test;
+      } else {
+        lines.push(line);
+        line = ch;
+        if (lines.length === 2) break;
+      }
     }
-    ctx.fillText(t + '…', x, y);
+    if (lines.length < 2 && line) lines.push(line);
   }
+
+  // 두 줄 넘어가면 두 번째 줄을 말줄임
+  if (lines.length > 2) lines.length = 2;
+  if (lines.length === 2) {
+    let l2 = lines[1];
+    while (l2.length && ctx.measureText(l2 + '…').width > maxWidth) {
+      l2 = l2.slice(0, -1);
+    }
+    lines[1] = l2 + (l2.endsWith('…') ? '' : '…');
+  }
+
+  return lines;
+}
+
+// 상단 바 오른쪽 정렬로 1~2줄 그리기(언어별 고정 폰트/줄간격)
+function drawTopBarText(label, xRight, yCenter, maxWidth) {
+  const { size, lineHeight } = TOP_BAR_FONT[lang] || TOP_BAR_FONT.en;
+  ctx.font = `bold ${size}px sans-serif`;
+  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.textAlign = "right";
+  ctx.textBaseline = "middle";
+
+  const lines = wrapToTwoLines(label, maxWidth);
+  const totalH = lines.length * lineHeight;
+  const startY = yCenter - (totalH - lineHeight) / 2;
+
+  lines.forEach((ln, i) => {
+    ctx.fillText(ln, xRight, startY + i * lineHeight);
+  });
+}
+
 
   function loadBaseImage(src) {
     return new Promise((resolve, reject) => {
