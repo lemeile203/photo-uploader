@@ -466,7 +466,7 @@ function wrapToTwoLines(text, maxWidth) {
         line = test;
       } else {
         lines.push(line);
-       // line = ch;
+        line = ch;
         if (lines.length === 2) break;
       }
     }
@@ -474,14 +474,14 @@ function wrapToTwoLines(text, maxWidth) {
   }
 
   // 두 줄 넘어가면 두 번째 줄을 말줄임
-  if (lines.length > 2) lines.length = 2;
+ /* if (lines.length > 2) lines.length = 2;
   if (lines.length === 2) {
     let l2 = lines[1];
     while (l2.length && ctx.measureText(l2 + '…').width > maxWidth) {
       l2 = l2.slice(0, -1);
     }
     lines[1] = l2 + (l2.endsWith('…') ? '' : '…');
-  }
+  }*/
 
   return lines;
 }
