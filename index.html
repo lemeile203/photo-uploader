@@ -536,9 +536,10 @@ function drawTopBarText(label, xRight, yCenter, maxWidth) {
     form.append("goal", selectedLabel);     // 현재 화면 언어의 라벨
     form.append("goalId", selectedId);      // 고정 ID (a~i)
     form.append("email", (document.getElementById("userEmail").value || "").trim());
-    form.append("lang", lang);              // 서버에서 원하면 활용
+    const uiLang = (lang === 'en') ? 'en' : 'ko';
+    form.append("lang", uiLang);
 
-    fetch("https://script.google.com/macros/s/AKfycbzmtx4p5P3T0NV6Vx0_0gJwqtQTPOPbt6ASPro5G5V8v5c8UP2id0wiCo_QnTDTo4zK/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwh_Xiq1EEz79EzmrVAR2K7H4OClaxV43mZbhgb74LlSSc45MR4TO-r3MPi-9GmBOb4/exec", {
       method: "POST",
       body: form
     })
