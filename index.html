@@ -291,7 +291,7 @@
     return cur ?? '';
   }
 
-  function setLanguage(newLang) {
+  async function setLanguage(newLang) {
     lang = newLang;
     localStorage.setItem('lang', lang);
 
@@ -320,9 +320,9 @@
 
     // 캔버스 언어 반영 재그리기
     if (originalImageUrl && prevSelectedId) {
-      renderCanvas(originalImageUrl, prevSelectedId);
-      imageDataUrl = canvas.toDataURL("image/png");
-    }
+     await renderCanvas(originalImageUrl, prevSelectedId);
+     imageDataUrl = canvas.toDataURL("image/png");
+   }
   }
 
   function getSelectedGoalId() {
@@ -359,9 +359,9 @@
   }
 
   // 한/영 토글 클릭
-  langBtn.addEventListener('click', () => {
-    setLanguage(lang === 'ko' ? 'en' : 'ko');
-  });
+  langBtn.addEventListener('click', async () => {
+   await setLanguage(lang === 'ko' ? 'en' : 'ko');
+ });
 
   // 사진선택 버튼 -> 파일 입력 열기
   document.getElementById("customButton").addEventListener("click", () => {
