@@ -4,131 +4,224 @@
   <meta charset="UTF-8" />
   <title>실천 목표 정하기</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- (선택) CropperJS가 필요 없다면 아래 두 줄은 제거해도 됩니다 -->
   <script src="https://unpkg.com/cropperjs"></script>
   <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css" />
+
   <script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
   <style>
+    :root {
+      --container-max: 300px;
+    }
     body {
       margin: 0;
-      font-family: sans-serif;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif;
       background-color: #f4f4f4;
       text-align: center;
       padding: 20px;
     }
-
     h2 {
       color: #333;
       font-size: 1.2rem;
       margin-bottom: 1rem;
+      line-height: 1.4;
     }
-#options label {
-   font-size: 1.1rem;    /* 字号保持不变或可调小为 1rem */
-  line-height: 1.2;     /* 行高（选项文本本身的行距）减小 */
-  display: block;       
-  margin-bottom: 4px;      /* 每个选项间距 */
-}
+    #options {
+      text-align: left;
+      margin: 15px auto;
+      max-width: var(--container-max);
+    }
+    #options label {
+      font-size: 1.02rem;
+      line-height: 1.2;
+      display: block;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
     #preview {
-  width: 90vw;
-  max-width: 300px;
-  height: 350px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  margin-top: 25px;
+      width: 90vw;
+      max-width: var(--container-max);
+      height: 350px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      margin-top: 25px;
     }
+    input[type="file"] { display: none; }
 
-    input[type="file"] {
-      display: none;
+    .gray-btn, .blue-btn {
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform .05s ease;
     }
+    .gray-btn:active, .blue-btn:active { transform: translateY(1px); }
 
-    /* 📷 灰色按钮 */
     .gray-btn {
       margin-top: 15px;
       background-color: #ccc;
       color: #333;
-      border: none;
       padding: 8px 12px;
       font-size: 1rem;
-      border-radius: 6px;
-      cursor: pointer;
     }
+    .gray-btn:hover { background-color: #bbb; }
 
-    .gray-btn:hover {
-      background-color: #bbb;
-    }
-
-    /* 📤 蓝色按钮 */
     .blue-btn {
       margin-top: 20px;
       background-color: #007BFF;
       color: white;
-      border: none;
       padding: 8px 25px;
       font-size: 1.1rem;
-      border-radius: 6px;
-      cursor: pointer;
     }
-
-    .blue-btn:hover {
-      background-color: #0056b3;
-    }
+    .blue-btn:hover { background-color: #0056b3; }
 
     #result {
-      margin-top: 20px;
+      margin-top: 16px;
+      font-size: 0.98rem;
+      color: #333;
+      min-height: 1.2em;
+    }
+
+    /* 상단 한/영 토글 배지 */
+    .lang-badge {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      background: #111;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.25);
+      cursor: pointer;
+      user-select: none;
+      line-height: 1;
+    }
+    .lang-badge:hover { opacity: .9; }
+
+    .email-wrap {
+      text-align: center;
+      max-width: var(--container-max);
+      margin: 0 auto;
+    }
+    .email-input {
+      width: 100%;
+      height: 36px;
       font-size: 1rem;
+      padding: 6px 10px;
+      margin: 4px auto 8px auto;
+      border: 1px solid #ccc;
+      border-radius: 0;
+      box-sizing: border-box;
+    }
+    .email-help {
+      margin: 3px 0 4px 0;
+      font-size: 0.75rem;
       color: #333;
     }
   </style>
 </head>
 <body>
-  <h2>‘함께 디자인하는 포용: 실천을 통한 변화’<br />내가 포용할 수 있는 실천 목표 정하기</h2>
+  <!-- 상단 언어 토글 -->
+  <button id="langToggle" class="lang-badge" aria-label="Switch language">ENG</button>
 
-<div id="options" style="text-align: left; margin: 15px auto; max-width: 300px;">
-  <label><input type="radio" name="textOption" value="쓰임을 찾아 계속 사용하기" data-id="b" /> 쓰임을 찾아 계속 사용하기</label>
-  <label><input type="radio" name="textOption" value="성장하는 대상 보살피기" data-id="e" /> 성장하는 대상 보살피기</label>
-  <label><input type="radio" name="textOption" value="익숙함 극복하기" data-id="g" /> 익숙함 극복하기</label>
-  <label><input type="radio" name="textOption" value="지속가능 공동체 만들기" data-id="h" /> 지속가능 공동체 만들기</label>
-  <label><input type="radio" name="textOption" value="인간의 보편성 인식하기" data-id="i" /> 인간의 보편성 인식하기</label>
-  <label><input type="radio" name="textOption" value="나에게 맞게 바꾸어 보기" data-id="c" /> 나에게 맞게 바꾸어 보기</label>
-  <label><input type="radio" name="textOption" value="버려진 것의 아름다움 발견하기" data-id="a" /> 버려진 것의 아름다움 발견하기</label>
-  <label><input type="radio" name="textOption" value="신체적 차이 배려하기" data-id="d" /> 신체적 차이 배려하기</label>
-  <label><input type="radio" name="textOption" value="기술에 따른 행동변화 이해하기" data-id="f" /> 기술에 따른 행동변화 이해하기</label>
-</div>
- 
-  
+  <h2 id="titleBlock">
+    ‘함께 디자인하는 포용: 실천을 통한 변화’<br/>내가 포용할 수 있는 실천 목표 정하기
+  </h2>
+
+  <div id="options"></div>
+
   <!-- 숨긴 파일 선택 input -->
   <input type="file" accept="image/*" id="inputImage" />
 
   <!-- 사용자 친화적 버튼 -->
   <button class="gray-btn" id="customButton">📷 사진 선택</button>
   <br />
-  <canvas id="preview" width="300" height="350"></canvas>
+  <canvas id="preview" width="300" height="350" aria-label="Preview canvas"></canvas>
   <br />
-  <div style="text-align: center;">
- 
-   </p>
-  <input id="userEmail" type="email" placeholder="이메일 주소 (선택사항)"
-    style="width: 100%; max-width: 300px; height: 36px;
-           font-size: 1.0rem; padding: 6px 10px;
-           margin: 4px auto 10px auto;
-           border: 1px solid #ccc;
-           border-radius: 0;
-           box-sizing: border-box;" />
-    <p style="margin: 3px 0 4px 0; font-size: 0.75rem; color: #333;">
-    이메일을 작성해주시면, 참여하신 사진을 이메일로 보내드립니다.
-</div>
-  
-  <button class="blue-btn" onclick="upload()">참여하기</button>
+
+  <div class="email-wrap">
+    <input id="userEmail" type="email" class="email-input" placeholder="이메일 주소 (선택사항)" />
+    <p id="emailHelp" class="email-help">
+      이메일을 작성해주시면, 참여하신 사진을 이메일로 보내드립니다.
+    </p>
+  </div>
+
+  <button class="blue-btn" id="submitBtn">참여하기</button>
   <p id="result"></p>
 
 <script>
-  const input = document.getElementById('inputImage');
-  const canvas = document.getElementById('preview');
-  const ctx = canvas.getContext('2d');
+  /**************
+   * i18n 사전 *
+   **************/
+  const i18n = {
+    ko: {
+      htmlLang: "ko",
+      docTitle: "실천 목표 정하기",
+      title1: "‘함께 디자인하는 포용: 실천을 통한 변화’",
+      title2: "내가 포용할 수 있는 실천 목표 정하기",
+      choosePhoto: "📷 사진 선택",
+      submit: "참여하기",
+      emailPlaceholder: "이메일 주소 (선택사항)",
+      emailHelp: "이메일을 작성해주시면, 참여하신 사진을 이메일로 보내드립니다.",
+      alerts: {
+        noGoal: "실천목표를 선택하세요.",
+        noPhoto: "사진을 선택하세요."
+      },
+      status: {
+        heicConverting: "🔄 HEIC 변환 중...",
+        heicError: "❌ HEIC 변환 오류: ",
+        uploading: "⏳ 업로드 중...",
+        uploadSuccess: "✅ 업로드 완료!",
+        uploadFail: "❌ 업로드 실패: ",
+        error: "❌ 오류 발생: "
+      },
+      toggleLabel: "ENG", // 현재 한국어일 때 보여줄 버튼 텍스트(=바꿀 대상)
+      toggleAria: "Switch to English"
+    },
+    en: {
+      htmlLang: "en",
+      docTitle: "Choose a Practice Goal",
+      title1: "“Designing Inclusion Together: Change Through Practice”",
+      title2: "Choose an inclusion practice you can commit to",
+      choosePhoto: "📷 Choose photo",
+      submit: "Submit",
+      emailPlaceholder: "Email address (optional)",
+      emailHelp: "Enter your email to receive the photo you participated with.",
+      alerts: {
+        noGoal: "Please select a goal.",
+        noPhoto: "Please choose a photo."
+      },
+      status: {
+        heicConverting: "🔄 Converting HEIC...",
+        heicError: "❌ HEIC conversion error: ",
+        uploading: "⏳ Uploading...",
+        uploadSuccess: "✅ Upload complete!",
+        uploadFail: "❌ Upload failed: ",
+        error: "❌ Error: "
+      },
+      toggleLabel: "한글", // 현재 영어일 때 보여줄 버튼 텍스트
+      toggleAria: "한국어로 전환"
+    }
+  };
 
-  let imageDataUrl = null;
-  let originalImageUrl = null;
+  /************************
+   * 목표(라디오) 정의표  *
+   ************************/
+  const GOALS = [
+    { id: "b", ko: "쓰임을 찾아 계속 사용하기",    en: "Keep using by finding new purposes" },
+    { id: "e", ko: "성장하는 대상 보살피기",        en: "Care for growing beings" },
+    { id: "g", ko: "익숙함 극복하기",              en: "Overcome the familiar" },
+    { id: "h", ko: "지속가능 공동체 만들기",        en: "Build a sustainable community" },
+    { id: "i", ko: "인간의 보편성 인식하기",        en: "Recognize our shared humanity" },
+    { id: "c", ko: "나에게 맞게 바꾸어 보기",        en: "Modify to fit myself" },
+    { id: "a", ko: "버려진 것의 아름다움 발견하기",  en: "Discover the beauty in the discarded" },
+    { id: "d", ko: "신체적 차이 배려하기",          en: "Accommodate physical differences" },
+    { id: "f", ko: "기술에 따른 행동변화 이해하기",  en: "Understand behavior change with technology" }
+  ];
 
-  // ① 选项ID → 图标路径（按你的 data-id: a~i）
+  /********************
+   * ID별 아이콘/색상 *
+   ********************/
   const ICONS = {
     a: "./icons/a.png",
     b: "./icons/b.png",
@@ -140,49 +233,150 @@
     h: "./icons/h.png",
     i: "./icons/i.png",
   };
+  const COLORS = {
+    a: "#ED40C4",
+    b: "#00A400",
+    c: "#FFD700",
+    d: "#22E7AD",
+    e: "#7E22C6",
+    f: "#2257F3",
+    g: "#FF8700",
+    h: "#E00000",
+    i: "#00C3FF"
+  };
 
-  // ② 预加载并做简单缓存，避免重复下载
-  const iconCache = {}; // { id: HTMLImageElement }
+  const iconCache = {};
   function loadIconById(id) {
     return new Promise((resolve, reject) => {
       if (!id || !ICONS[id]) return resolve(null);
       if (iconCache[id] && iconCache[id].complete) return resolve(iconCache[id]);
-
       const img = new Image();
-      img.crossOrigin = "anonymous"; // 若与图标同域也没关系
-      img.onload = () => {
-        iconCache[id] = img;
-        resolve(img);
-      };
+      img.crossOrigin = "anonymous";
+      img.onload = () => { iconCache[id] = img; resolve(img); };
       img.onerror = reject;
       img.src = ICONS[id];
     });
   }
 
+  /**************
+   * DOM 핸들러 *
+   **************/
+  const input     = document.getElementById('inputImage');
+  const canvas    = document.getElementById('preview');
+  const ctx       = canvas.getContext('2d');
+
+  const langBtn   = document.getElementById('langToggle');
+  const titleEl   = document.getElementById('titleBlock');
+  const optionsEl = document.getElementById('options');
+  const chooseBtn = document.getElementById('customButton');
+  const emailEl   = document.getElementById('userEmail');
+  const emailHelp = document.getElementById('emailHelp');
+  const submitBtn = document.getElementById('submitBtn');
+  const resultEl  = document.getElementById('result');
+
+  let imageDataUrl = null;
+  let originalImageUrl = null;
+
+  // 현재 언어 (localStorage 우선)
+  let lang = localStorage.getItem('lang') || 'ko';
+
+  function t(path) {
+    const segs = path.split('.');
+    let cur = i18n[lang];
+    for (const s of segs) cur = cur?.[s];
+    return cur ?? '';
+  }
+
+  function setLanguage(newLang) {
+    lang = newLang;
+    localStorage.setItem('lang', lang);
+
+    // <html lang="">
+    document.documentElement.lang = i18n[lang].htmlLang || lang;
+
+    // <title>
+    document.title = i18n[lang].docTitle;
+
+    // 상단 제목
+    titleEl.innerHTML = `${i18n[lang].title1}<br/>${i18n[lang].title2}`;
+
+    // 버튼/placeholder
+    chooseBtn.textContent = i18n[lang].choosePhoto;
+    submitBtn.textContent = i18n[lang].submit;
+    emailEl.placeholder = i18n[lang].emailPlaceholder;
+    emailHelp.textContent = i18n[lang].emailHelp;
+
+    // 언어 토글 뱃지
+    langBtn.textContent = i18n[lang].toggleLabel;
+    langBtn.setAttribute('aria-label', i18n[lang].toggleAria);
+
+    // 옵션 재렌더 (선택 유지)
+    const prevSelectedId = getSelectedGoalId();
+    renderOptions(prevSelectedId);
+
+    // 캔버스 언어 반영 재그리기
+    if (originalImageUrl && prevSelectedId) {
+      renderCanvas(originalImageUrl, prevSelectedId);
+      imageDataUrl = canvas.toDataURL("image/png");
+    }
+  }
+
+  function getSelectedGoalId() {
+    const checked = optionsEl.querySelector('input[name="textOption"]:checked');
+    return checked ? checked.dataset.id : null;
+  }
+  function getGoalLabelById(id) {
+    const item = GOALS.find(g => g.id === id);
+    return item ? item[lang] : '';
+  }
+
+  function renderOptions(selectedId = null) {
+    const html = GOALS.map(g => {
+      const label = g[lang];
+      const checked = g.id === selectedId ? 'checked' : '';
+      // data-id는 고정, value는 현재 언어 라벨
+      return `
+        <label>
+          <input type="radio" name="textOption" value="${label}" data-id="${g.id}" ${checked} />
+          ${label}
+        </label>`;
+    }).join('');
+    optionsEl.innerHTML = html;
+
+    // 라디오 이벤트
+    optionsEl.querySelectorAll('input[name="textOption"]').forEach(radio => {
+      radio.addEventListener('change', async () => {
+        if (!originalImageUrl) return;
+        const sid = radio.dataset.id;
+        await renderCanvas(originalImageUrl, sid);
+        imageDataUrl = canvas.toDataURL("image/png");
+      });
+    });
+  }
+
+  // 한/영 토글 클릭
+  langBtn.addEventListener('click', () => {
+    setLanguage(lang === 'ko' ? 'en' : 'ko');
+  });
+
+  // 사진선택 버튼 -> 파일 입력 열기
   document.getElementById("customButton").addEventListener("click", () => {
     input.click();
   });
 
+  // 파일 선택 처리 + HEIC 변환
   input.addEventListener('change', async e => {
     const file = e.target.files[0];
     if (!file) return;
 
     let blob = file;
 
-    if (
-      file.type === 'image/heic' || file.type === 'image/heif' ||
-      /\.heic$/i.test(file.name)
-    ) {
+    if (file.type === 'image/heic' || file.type === 'image/heif' || /\.heic$/i.test(file.name)) {
       try {
-        document.getElementById("result").innerText = "🔄 HEIC 변환 중...";
-        blob = await heic2any({
-          blob: file,
-          toType: 'image/jpeg',
-          quality: 0.9
-        });
+        resultEl.innerText = t('status.heicConverting');
+        blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
       } catch (err) {
-        document.getElementById("result").innerText =
-          "❌ HEIC 변환 오류: " + err.message;
+        resultEl.innerText = t('status.heicError') + err.message;
         return;
       }
     }
@@ -191,37 +385,21 @@
     reader.onload = async () => {
       originalImageUrl = reader.result;
 
-      // 读取当前选择
-      const selectedInput = document.querySelector('input[name="textOption"]:checked');
-      const selectedText = selectedInput ? selectedInput.value : null;
-      const selectedId = selectedInput ? selectedInput.dataset.id : null;
-
-      await renderCanvas(originalImageUrl, selectedText, selectedId);
+      // 현재 선택 가져와서 그림
+      const sid = getSelectedGoalId();
+      await renderCanvas(originalImageUrl, sid);
       imageDataUrl = canvas.toDataURL("image/png");
-      document.getElementById("result").innerText = "";
+      resultEl.innerText = "";
     };
     reader.readAsDataURL(blob);
   });
 
-  // 单选项改变时重绘
-  document.querySelectorAll('input[name="textOption"]').forEach(radio => {
-    radio.addEventListener('change', async () => {
-      if (!originalImageUrl) return;
-      const selectedInput = document.querySelector('input[name="textOption"]:checked');
-      const selectedText = selectedInput ? selectedInput.value : null;
-      const selectedId = selectedInput ? selectedInput.dataset.id : null;
-
-      await renderCanvas(originalImageUrl, selectedText, selectedId);
-      imageDataUrl = canvas.toDataURL("image/png");
-    });
-  });
-
-  // ③ 负责把照片、顶部色条、文字、右上角图标都画上去
-  async function renderCanvas(originalUrl, selectedText, selectedId) {
-    // 先并行准备底图与图标
+  // 캔버스 그리기
+  async function renderCanvas(originalUrl, selectedId) {
     const baseImg = await loadBaseImage(originalUrl);
     const iconImg = selectedId ? await loadIconById(selectedId) : null;
 
+    // 정사각형 크롭
     const side = Math.min(baseImg.width, baseImg.height);
     const sx = (baseImg.width - side) / 2;
     const sy = (baseImg.height - side) / 2;
@@ -230,34 +408,48 @@
     canvas.height = 350;
     ctx.clearRect(0, 0, 300, 350);
 
-    // 底图（裁成正方形放到下方 300x300）
+    // 사진 본문
     ctx.drawImage(baseImg, sx, sy, side, side, 0, 50, 300, 300);
 
-    // 顶部色条
-    const barColor = selectedText ? getColorByText(selectedText) : "#939393";
+    // 상단 바 색상 (선택 없으면 회색)
+    const barColor = selectedId ? (COLORS[selectedId] || "#939393") : "#939393";
     ctx.fillStyle = barColor;
     ctx.fillRect(0, 0, 300, 50);
 
-    // 文字（有选项才绘制）
-    if (selectedText) {
-      ctx.font = "bold 20px sans-serif";
-      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+    // 우측 텍스트
+    if (selectedId) {
+      const label = getGoalLabelById(selectedId);
+      ctx.fillStyle = "rgba(255,255,255,0.95)";
       ctx.textAlign = "right";
       ctx.textBaseline = "middle";
-      ctx.fillText(selectedText, 290, 25);
+      drawFitText(label, 290, 25, 220, 20, 12); // 우측여백 감안해 220px 영역
     }
 
-    // 右上角图标（有选项才绘制）
+    // 좌측 아이콘
     if (iconImg && selectedId) {
-      const pad = 0;          // 与边缘的内边距
-      const iconSize = 50;    // 你可改为 48 等
-      const x = pad;
-      const y = pad;          // 画在色条内
-      // 可选：在图标下加一点半透明白底，提升可读性
-      // ctx.fillStyle = "rgba(255,255,255,0.25)";
-      // ctx.fillRect(x - 2, y - 2, iconSize + 4, iconSize + 4);
+      const pad = 0;
+      const iconSize = 50;
+      const x = pad, y = pad;
       ctx.drawImage(iconImg, x, y, iconSize, iconSize);
     }
+  }
+
+  // 텍스트가 길면 폰트 크기 줄이거나 ... 처리
+  function drawFitText(text, x, y, maxWidth, startSize = 20, minSize = 12) {
+    for (let size = startSize; size >= minSize; size--) {
+      ctx.font = `bold ${size}px sans-serif`;
+      if (ctx.measureText(text).width <= maxWidth) {
+        ctx.fillText(text, x, y);
+        return;
+      }
+    }
+    // 너무 길면 말줄임
+    ctx.font = `bold ${minSize}px sans-serif`;
+    let t = text;
+    while (t.length && ctx.measureText(t + '…').width > maxWidth) {
+      t = t.slice(0, -1);
+    }
+    ctx.fillText(t + '…', x, y);
   }
 
   function loadBaseImage(src) {
@@ -270,67 +462,50 @@
     });
   }
 
-  function getColorByText(text) {
-    switch (text) {
-      case "버려진 것의 아름다움 발견하기":
-        return "#ED40C4";
-      case "쓰임을 찾아 계속 사용하기":
-        return "#00A400";
-      case "나에게 맞게 바꾸어 보기":
-        return "#FFD700";
-      case "신체적 차이 배려하기":
-        return "#22E7AD";
-      case "성장하는 대상 보살피기":
-        return "#7E22C6";
-      case "기술에 따른 행동변화 이해하기":
-        return "#2257F3";
-      case "익숙함 극복하기":
-        return "#FF8700";
-      case "지속가능 공동체 만들기":
-        return "#E00000";
-      case "인간의 보편성 인식하기":
-        return "#00C3FF";
-      default:
-        return "#939393";
-    }
-  }
-
+  // 업로드
   function upload() {
-   const emailInput = document.getElementById("userEmail").value.trim();
-    const selectedTextInput = document.querySelector('input[name="textOption"]:checked');
-    if (!selectedTextInput) {
-      alert("실천목표를 선택하세요.");
+    const selectedRadio = optionsEl.querySelector('input[name="textOption"]:checked');
+    if (!selectedRadio) {
+      alert(t('alerts.noGoal'));
       return;
     }
-    const selectedGoal = selectedTextInput.value;
-    const selectedGoalId = selectedTextInput.dataset.id;
+    const selectedId = selectedRadio.dataset.id;
+    const selectedLabel = getGoalLabelById(selectedId);
 
     if (!imageDataUrl) {
-      alert("사진을 선택하세요.");
+      alert(t('alerts.noPhoto'));
       return;
     }
 
-    document.getElementById("result").innerText = "⏳ 업로드 중...";
+    resultEl.innerText = t('status.uploading');
 
     const form = new FormData();
     form.append("image", imageDataUrl);
-    form.append("goal", selectedGoal);
-    form.append("goalId", selectedGoalId);
-    form.append("email", emailInput);
+    form.append("goal", selectedLabel);     // 현재 화면 언어의 라벨
+    form.append("goalId", selectedId);      // 고정 ID (a~i)
+    form.append("email", (document.getElementById("userEmail").value || "").trim());
+    form.append("lang", lang);              // 서버에서 원하면 활용
 
     fetch("https://script.google.com/macros/s/AKfycbzmtx4p5P3T0NV6Vx0_0gJwqtQTPOPbt6ASPro5G5V8v5c8UP2id0wiCo_QnTDTo4zK/exec", {
       method: "POST",
       body: form
     })
-      .then(res => res.text())
-      .then(res => {
-        document.getElementById("result").innerText = res.includes("SUCCESS")
-          ? "✅ 업로드 완료!"
-          : "❌ 업로드 실패: " + res;
-      })
-      .catch(err => {
-        document.getElementById("result").innerText = "❌ 오류 발생: " + err.message;
-      });
+    .then(res => res.text())
+    .then(res => {
+      resultEl.innerText = res.includes("SUCCESS")
+        ? t('status.uploadSuccess')
+        : t('status.uploadFail') + res;
+    })
+    .catch(err => {
+      resultEl.innerText = t('status.error') + err.message;
+    });
   }
-</script>
 
+  document.getElementById("submitBtn").addEventListener("click", upload);
+
+  // 초기 세팅
+  renderOptions(null);
+  setLanguage(lang);
+</script>
+</body>
+</html>
