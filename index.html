@@ -173,7 +173,6 @@
         uploading: "⏳ 업로드 중...",
         uploadSuccess: "<b style='color:blue;'>업로드 완료!</b><br><b style='color:red;'>업로드된 사진이 1분 후에 화면에 나타납니다. 잠시 기다려 주세요.</b>",
         uploadFail: "❌ 업로드 실패: ",
-        uploadFail: "❌ 업로드 실패: ",
         error: "❌ 오류 발생: "
       },
       toggleLabel: "ENG", // 현재 한국어일 때 보여줄 버튼 텍스트(=바꿀 대상)
@@ -197,7 +196,6 @@
         heicError: "❌ HEIC conversion error: ",
         uploading: "⏳ Uploading...",
         uploadSuccess: "<b style='color:blue;'>Upload complete!</b><br><b style='color:red;'>Your uploaded photo will appear on the screen after 1 minute. Please wait.</b>",
-        uploadFail: "❌ Upload failed: ",
         uploadFail: "❌ Upload failed: ",
         error: "❌ Error: "
       },
@@ -547,10 +545,14 @@ function drawTopBarText(label, xRight, yCenter, maxWidth) {
     })
     .then(res => res.text())
     .then(res => {
-      resultEl.innerText = res.includes("SUCCESS")
-        ? t('status.uploadSuccess')
-        : t('status.uploadFail') + res;
-    })
+  if (res.includes("SUCCESS")) {
+    // ✅ 解析你在 i18n 里放的 <b> 和 <br> 等 HTML
+    resultEl.innerHTML = t('status.uploadSuccess');
+  } else {
+    // 失败消息不含 HTML，用 innerText/innerHTML 都可
+    resultEl.innerText = t('status.uploadFail') + res;
+  }
+})
     .catch(err => {
       resultEl.innerText = t('status.error') + err.message;
     });
