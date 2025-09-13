@@ -74,6 +74,12 @@
     }
     .blue-btn:hover { background-color: #0056b3; }
 
+    /* 추가 */
+.blue-btn[disabled] {
+  opacity: .6;
+  cursor: not-allowed;
+  filter: grayscale(0.2);
+}
     #result {
       margin-top: 16px;
       font-size: 0.98rem;
@@ -281,6 +287,25 @@
   let imageDataUrl = null;
   let originalImageUrl = null;
 
+  let isUploading = false;
+
+// 업로드 중 UI 잠그기/풀기
+function setUIBusy(busy) {
+  isUploading = busy;
+
+  // 제출 버튼
+  submitBtn.disabled = busy;
+  submitBtn.setAttribute('aria-busy', busy ? 'true' : 'false');
+  submitBtn.setAttribute('aria-disabled', busy ? 'true' : 'false');
+  submitBtn.textContent = busy ? t('status.uploading') : i18n[lang].submit;
+
+  // 다른 입력들도 잠금(선택)
+  chooseBtn.disabled = busy;
+  input.disabled = busy;
+  emailEl.disabled = busy;
+  optionsEl.querySelectorAll('input[name="textOption"]').forEach(r => r.disabled = busy);
+}
+
   // 현재 언어 (localStorage 우선)
   let lang = localStorage.getItem('lang') || 'ko';
 
@@ -306,7 +331,8 @@
 
     // 버튼/placeholder
     chooseBtn.textContent = i18n[lang].choosePhoto;
-    submitBtn.textContent = i18n[lang].submit;
+
+    submitBtn.textContent = isUploading ? t('status.uploading') : i18n[lang].submit;
     emailEl.placeholder = i18n[lang].emailPlaceholder;
     emailHelp.textContent = i18n[lang].emailHelp;
 
@@ -516,19 +542,17 @@ function drawTopBarText(label, xRight, yCenter, maxWidth) {
 
   // 업로드
   function upload() {
-    const selectedRadio = optionsEl.querySelector('input[name="textOption"]:checked');
-    if (!selectedRadio) {
-      alert(t('alerts.noGoal'));
-      return;
-    }
-    const selectedId = selectedRadio.dataset.id;
-    const selectedLabel = getGoalLabelById(selectedId);
+     if (isUploading) return;
 
-    if (!imageDataUrl) {
-      alert(t('alerts.noPhoto'));
-      return;
-    }
+  const selectedRadio = optionsEl.querySelector('input[name="textOption"]:checked');
+  if (!selectedRadio) { alert(t('alerts.noGoal')); return; }
+  const selectedId = selectedRadio.dataset.id;
+  const selectedLabel = getGoalLabelById(selectedId);
 
+  if (!imageDataUrl) { alert(t('alerts.noPhoto')); return; }
+
+  // === 잠금 시작 ===
+  setUIBusy(true);
     resultEl.innerText = t('status.uploading');
 
     const form = new FormData();
@@ -539,23 +563,24 @@ function drawTopBarText(label, xRight, yCenter, maxWidth) {
     const uiLang = (lang === 'en') ? 'en' : 'ko';
     form.append("lang", uiLang);
 
-    fetch("https://script.google.com/macros/s/AKfycbyrvmD7actnvnGdPbCob22HCFEdiUKJZmyUQVtxYS6Zz6G4uDFKIzJGec-9xO7yiCI0/exec", {
-      method: "POST",
-      body: form
-    })
-    .then(res => res.text())
-    .then(res => {
+   fetch("https://script.google.com/macros/s/AKfycbyrvmD7actnvnGdPbCob22HCFEdiUKJZmyUQVtxYS6Zz6G4uDFKIzJGec-9xO7yiCI0/exec", {
+  method: "POST",
+  body: form
+})
+.then(res => res.text())
+.then(res => {
   if (res.includes("SUCCESS")) {
-    // ✅ 解析你在 i18n 里放的 <b> 和 <br> 等 HTML
-    resultEl.innerHTML = t('status.uploadSuccess');
+    resultEl.innerHTML = t('status.uploadSuccess'); // HTML 유지
   } else {
-    // 失败消息不含 HTML，用 innerText/innerHTML 都可
     resultEl.innerText = t('status.uploadFail') + res;
   }
 })
-    .catch(err => {
-      resultEl.innerText = t('status.error') + err.message;
-    });
+.catch(err => {
+  resultEl.innerText = t('status.error') + err.message;
+})
+.finally(() => {
+  setUIBusy(false); // 업로드 UI 잠금 해제
+});
   }
 
   document.getElementById("submitBtn").addEventListener("click", upload);
